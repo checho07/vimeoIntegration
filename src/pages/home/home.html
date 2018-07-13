@@ -1,14 +1,59 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
-</ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content padding id="back">
+
+   
+  
+    <ion-card [hidden]="hideContent" *ngFor="let card of videoList; let i = index"  >
+
+        <ion-item>
+          <ion-avatar item-start>
+           <ion-icon name="person"></ion-icon>
+          </ion-avatar>
+          <h2>{{card.name}}</h2>
+     
+          <p>{{card.created_time | date}}</p>
+          <hr>
+        </ion-item>
+        
+       <video src="{{card.files[0].link}}" height="100px" width="50%" style="margin:auto 25%;background-color:black" controls controlsList="nodownload" poster="{{card.pictures.sizes[6].link}}" ></video>
+       
+         <ion-card-content>
+          <p>{{card.description}}</p>
+        </ion-card-content>
+      
+        <ion-row>
+          <ion-col>
+            <button ion-button icon-start clear small >
+              <ion-icon name="eye"></ion-icon>
+              <div>{{card.stats.plays}} Vista</div>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button icon-start clear small (click)="openCommentsModal(card.metadata.connections.comments)">
+              <ion-icon name="text"></ion-icon>
+              <div>{{card.metadata.connections.comments.total}} Comentarios</div>
+            </button>
+          </ion-col>
+          <ion-col center text-center>
+            <ion-note>
+              11h ago
+            </ion-note>
+          </ion-col>
+        </ion-row>
+      
+      </ion-card>
+
+<!-- <button ion-button block (click)="openGallery()" [hidden]="showBtnGaleria" id="btnGaleria">Abrir Galeria</button> -->
+
+<ion-fab middle center  >
+  <button ion-fab  (click)="openGallery()"  [hidden]= "showBtnGaleria" id="btnGaleria" color="danger"><ion-icon name="folder" ></ion-icon></button>
+</ion-fab>
+
+<div id="embed"  [hidden]="hideForm"></div>
+
+<ion-fab bottom right  >
+    <button ion-fab mini (click)="addVideo()"  [hidden]= "hideBtnModal" color="danger"><ion-icon name="videocam" ></ion-icon></button>
+  </ion-fab>
+
+
 </ion-content>
