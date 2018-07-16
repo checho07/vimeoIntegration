@@ -45,15 +45,19 @@
 
 <!-- <button ion-button block (click)="openGallery()" [hidden]="showBtnGaleria" id="btnGaleria">Abrir Galeria</button> -->
 
+
 <ion-fab middle center  >
   <button ion-fab  (click)="openGallery()"  [hidden]= "showBtnGaleria" id="btnGaleria" color="danger"><ion-icon name="folder" ></ion-icon></button>
 </ion-fab>
 
-<div id="embed"  [hidden]="hideForm"></div>
+<div id="embed"  [hidden]="true">
+  <input type="file" id="tusInput" (change)="OnchangeInput($event)">
+</div>
 
 <ion-fab bottom right  >
     <button ion-fab mini (click)="addVideo()"  [hidden]= "hideBtnModal" color="danger"><ion-icon name="videocam" ></ion-icon></button>
   </ion-fab>
-
+  <progress-bar [progress]="progress" [color]="'green'" >
+  </progress-bar>
 
 </ion-content>

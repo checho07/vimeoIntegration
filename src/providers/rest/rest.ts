@@ -1,6 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Config } from 'ionic-angular/umd';
 
 
 @Injectable()
@@ -11,6 +12,7 @@ export class RestProvider {
 
  private options : any;
  private headersParams: any;
+ private TusheadersParams: any;
  private vimeoURl:string;
 
  //Fin Variables
@@ -27,11 +29,75 @@ export class RestProvider {
         "Accept": "application/vnd.vimeo.*+json;version=3.4",
         "Authorization": "Bearer 08093dbf7ad01a80be3218b4201ad054"
     };
-
+    this.TusheadersParams =
+    {
+        "Tus-Resumable":"1.0.0",
+         "Content-Type": "application/offset+octet-stream",
+         "Upload-Offset": "0"
+     };
  }
 
  //Fin Constructor
 
+
+ PatchVideo(video,uploadLink){
+  this.options={
+
+    headers: this.TusheadersParams,
+    observe:'response'
+    
+ }
+ return this.http.patch(uploadLink,video,this.options)
+  
+
+ }
+
+ POST_tus(videoInfo){
+    this.options={
+
+    headers: this.headersParams,
+    body: 
+    JSON.stringify({
+
+      upload:
+      {
+          approach:"tus",
+          redirect_url:"http://localhost:8100",
+          size: videoInfo.size
+      },
+      name : videoInfo.nombre,
+      description:videoInfo.descripcion,
+     
+      embed:
+      {
+        buttons:
+        {
+          embed:false,
+          fullscreen:true,
+          hd:false,
+          like:true,
+          share:false,
+          watchlater:false
+        },
+      playbar:false,
+      title:
+        {
+        name:"show",
+        owner:"hide",
+        portrait:"hide"
+        },
+      privacy:
+        {
+        download:false,
+        embed:"private",
+        view:"nobody"
+        }
+    }
+    })
+ }
+  return this.http.post<any>(this.vimeoURl +"/me/videos",this.options.body,this.options)
+
+ }
 
 /**
  * Funcion que realiza un http Post request, que retorna los permisos y formulario, para hacer un upload de un video a vimeo.

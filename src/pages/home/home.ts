@@ -22,9 +22,12 @@ export class HomePage {
   public videoList:any;
   public hideContent = false; 
   public hideForm = true;
-
-videoInfo ={
-nombre:"",descripcion:"",likes:"",commments:"",fechaCreacion:""
+  public inputTus;
+  public progress = "0";
+  
+  
+public videoInfo ={
+nombre:"",descripcion:"",size:''
 };
 
   constructor(
@@ -35,30 +38,19 @@ nombre:"",descripcion:"",likes:"",commments:"",fechaCreacion:""
      public modalCtrl: ModalController,
      private alertCtr: AlertController,
     ){  this.getVideos()
+       
      
     }
   
   ionViewDidLoad()
   { 
- 
-    var inputFile =document.getElementById("file");  
-    let showBtnGaleria = true;
-     this.showBtnGaleria = showBtnGaleria;
-    let hideForm = true; 
-     this.hideForm = hideForm;
-    inputFile.onchange = function(){
-      
-      showBtnGaleria = true;
-      hideForm = false;
-      var x = {value:""};
-      x.value = this['files'][0].name;
-      alert(x.value);
-    }
-  }
+    
+ }
 
-  
   getVideos()
   {
+
+    
 
     let loader = this.loading.create({content: 'Cargando Pagina...'});
     let loader1 = this.loading.create({content: 'Cargando los ultimos videos...'});
@@ -74,6 +66,7 @@ nombre:"",descripcion:"",likes:"",commments:"",fechaCreacion:""
               this.videoList = this.videoRes.data;
              
              console.log(this.videoList);
+             this.progress = "50";
          })        
 
           },
@@ -92,6 +85,7 @@ nombre:"",descripcion:"",likes:"",commments:"",fechaCreacion:""
     );
        
     });
+    
   }
 
 
@@ -140,7 +134,11 @@ let alert = this.alertCtr.create({
           alert.present();
           
          } else {
-           this.requestPOST(data);
+           this.videoInfo.nombre = data.videoName;
+           this.videoInfo.descripcion =data.description;
+           this.recordVideo();
+           //this.requestPOSTTus(data);
+          //  this.requestPOST(data);
          }
        }
     }
@@ -153,7 +151,7 @@ alert.present();
 recordVideo()
 {
 
-    let options: CaptureVideoOptions = { limit: 1,duration:10,quality:0};
+    let options: CaptureVideoOptions = { limit: 1,duration:10};
  
     this.mediaCapture.captureVideo(options)
     .then((data: MediaFile[]) => data.forEach(element => {
@@ -163,7 +161,7 @@ recordVideo()
         this.hideContent = true;  
         // let btnGaleria = document.getElementById("btnGaleria")
         // btnGaleria.click(); 
-       document.getElementsByTagName('input')[1].value = "";
+       //document.getElementsByTagName('input')[1].value = "";
        
       
       }),
@@ -184,29 +182,30 @@ recordVideo()
 openGallery()
 {
   
-    var inputFile =document.getElementById("file");    
+    var inputFile =document.getElementById("tusInput");    
     inputFile.click();
     
 }
 
-
-
-
- requestPOST (videoInfo): void 
- {
-  
-  let embed = document.getElementById("embed");
+requestPOSTTus(videoInfo):void{
 
   let loader = this.loading.create({content: 'Obteniendo Enlace para Subir Video...',});
- 
   loader.present().then(() => 
   {
-      this.rest.uploadVideo(videoInfo).subscribe(result => 
+      this.rest.POST_tus(videoInfo).subscribe(result => 
         {
-        this.resPOST = result;
-       
-        embed.innerHTML= this.resPOST.upload.form;
-        this.recordVideo();
+          let loader = this.loading.create({content: 'Subiendo Video...',});
+          loader.present().then(()=>{
+            this.resPOST = result
+            let inputTus = document.getElementById('tusInput');
+              this.rest.PatchVideo(inputTus['files'][0],this.resPOST.upload.upload_link).
+              subscribe(
+                res =>{
+                  console.log(res)});
+                  loader.dismiss();
+          })
+         
+        
         },
       error => {
           alert(<any>error.message);
@@ -217,7 +216,35 @@ openGallery()
    loader.dismiss();  
   
   });
-} 
+}
+
+
+//  requestPOST (videoInfo): void 
+//  {
+  
+//   //let embed = document.getElementById("embed");
+
+//   let loader = this.loading.create({content: 'Obteniendo Enlace para Subir Video...',});
+ 
+//   loader.present().then(() => 
+//   {
+//       this.rest.uploadVideo(videoInfo).subscribe(result => 
+//         {
+//         this.resPOST = result;
+       
+//         //embed.innerHTML= this.resPOST.upload.form;
+//         this.recordVideo();
+//         },
+//       error => {
+//           alert(<any>error.message);
+//           console.log("requestPOSTError: " + error.message);
+//       }
+//   );
+
+//    loader.dismiss();  
+  
+//   });
+// } 
 
 
 
@@ -230,6 +257,8 @@ showLoading(){
   loader.present();
   
 }
+
+
 
 openCommentsModal(videoInfo) {
   
@@ -262,6 +291,14 @@ openCommentsModal(videoInfo) {
   // })
       
 }
+OnchangeInput(video) {
+  
+   
+  const videoFile = video.target.files[0];
+  this.videoInfo.size = videoFile.size;
+  
+  this.requestPOSTTus(this.videoInfo)
+ }
 
 
 

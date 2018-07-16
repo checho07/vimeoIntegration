@@ -8,9 +8,10 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { RestProvider } from '../providers/rest/rest';
 import { Camera } from '@ionic-native/camera';
-import { MediaCapture, MediaFile, CaptureError, CaptureImageOptions } from '@ionic-native/media-capture';
+import { MediaCapture  } from '@ionic-native/media-capture';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { File } from '@ionic-native/file';
+import {ProgressBarModule} from "angular-progress-bar"
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { File } from '@ionic-native/file';
   ],
   imports: [
     BrowserModule,
+    ProgressBarModule,
     HttpClientModule,
     IonicModule.forRoot(MyApp)
   ],
