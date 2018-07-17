@@ -6,7 +6,6 @@ import { RestProvider } from '../../providers/rest/rest';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture';
 import { LoadingController } from 'ionic-angular';
 import { AlertController,ToastController  } from 'ionic-angular';
-//import { VideoCapturePlusOptions, VideoCapturePlus } from '@ionic-native/video-capture-plus';
  
 @Component({
   selector: 'page-home',
@@ -38,8 +37,7 @@ nombre:"",descripcion:"",size:''
      public loading: LoadingController,
      public modalCtrl: ModalController,
      private alertCtr: AlertController,
-     private toastCtrl: ToastController,
-    // private videoCapturePlus: VideoCapturePlus
+     private toastCtrl: ToastController
     )
     { 
        this.getVideos()  
@@ -146,16 +144,7 @@ alert.present();
       
   }
 
-// recordVideoHD(){
-//   const options: VideoCapturePlusOptions = {
-//     limit: 1,
-//     duration:10,
-//     highquality: true,
-//     portraitOverlay: 'assets/img/',
-//     landscapeOverlay: 'assets/img/camera/overlay/landscape.png'
-//  } 
-//  this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => console.log(mediafile), error => console.log('Something went wrong'));
-// }
+
 recordVideo()
 {
 
