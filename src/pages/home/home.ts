@@ -5,7 +5,8 @@ import { ModalController, Modal } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest';
 import { MediaCapture, MediaFile, CaptureError, CaptureVideoOptions } from '@ionic-native/media-capture';
 import { LoadingController } from 'ionic-angular';
-import { AlertController } from 'ionic-angular';
+import { AlertController,ToastController  } from 'ionic-angular';
+//import { VideoCapturePlusOptions, VideoCapturePlus } from '@ionic-native/video-capture-plus';
  
 @Component({
   selector: 'page-home',
@@ -37,9 +38,11 @@ nombre:"",descripcion:"",size:''
      public loading: LoadingController,
      public modalCtrl: ModalController,
      private alertCtr: AlertController,
-    ){  this.getVideos()
-       
-     
+     private toastCtrl: ToastController,
+    // private videoCapturePlus: VideoCapturePlus
+    )
+    { 
+       this.getVideos()  
     }
   
   ionViewDidLoad()
@@ -49,9 +52,6 @@ nombre:"",descripcion:"",size:''
 
   getVideos()
   {
-
-    
-
     let loader = this.loading.create({content: 'Cargando Pagina...'});
     let loader1 = this.loading.create({content: 'Cargando los ultimos videos...'});
 
@@ -119,9 +119,14 @@ let alert = this.alertCtr.create({
     {
       text: 'Grabar',
       handler: data => {
-         if (data.videoName === "" && data.description === "" ) {
-           
-           let alert = this.alertCtr.create({
+         if (!(data.videoName === "" && data.description === "") ) {
+           this.videoInfo.nombre = data.videoName;
+           this.videoInfo.descripcion =data.description;
+           this.recordVideo();
+          
+          
+         } else {
+          let alert = this.alertCtr.create({
             title: 'Faltan Datos',
             subTitle: 'por favor brindanos un titulo y una descripcion para tu video, y si quieres tu correo',
             buttons:[{
@@ -132,13 +137,6 @@ let alert = this.alertCtr.create({
 
           });
           alert.present();
-          
-         } else {
-           this.videoInfo.nombre = data.videoName;
-           this.videoInfo.descripcion =data.description;
-           this.recordVideo();
-           //this.requestPOSTTus(data);
-          //  this.requestPOST(data);
          }
        }
     }
@@ -148,10 +146,20 @@ alert.present();
       
   }
 
+// recordVideoHD(){
+//   const options: VideoCapturePlusOptions = {
+//     limit: 1,
+//     duration:10,
+//     highquality: true,
+//     portraitOverlay: 'assets/img/',
+//     landscapeOverlay: 'assets/img/camera/overlay/landscape.png'
+//  } 
+//  this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => console.log(mediafile), error => console.log('Something went wrong'));
+// }
 recordVideo()
 {
 
-    let options: CaptureVideoOptions = { limit: 1,duration:10};
+    let options: CaptureVideoOptions = { limit: 1,duration:10,quality:100};
  
     this.mediaCapture.captureVideo(options)
     .then((data: MediaFile[]) => data.forEach(element => {
@@ -192,19 +200,38 @@ requestPOSTTus(videoInfo):void{
   let loader = this.loading.create({content: 'Obteniendo Enlace para Subir Video...',});
   loader.present().then(() => 
   {
+  
       this.rest.POST_tus(videoInfo).subscribe(result => 
         {
-          let loader = this.loading.create({content: 'Subiendo Video...',});
-          loader.present().then(()=>{
+  
+          let loader1 = this.loading.create({content: 'Subiendo Video...',});
+          loader1.present().then(()=>{
             this.resPOST = result
             let inputTus = document.getElementById('tusInput');
-              this.rest.PatchVideo(inputTus['files'][0],this.resPOST.upload.upload_link).
-              subscribe(
-                res =>{
-                  console.log(res)});
-                  loader.dismiss();
+         
+               this.rest.PatchVideo(inputTus['files'][0],this.resPOST.upload.upload_link).subscribe(res =>{
+                
+                 if (res) {
+                  loader1.dismiss(); 
+                  let toast = this.toastCtrl.create({
+                    message: 'Tu video pasara a revision y sera publicado',
+                    duration: 3000,
+                    position: 'bottom'
+                  }); 
+                  toast.onDidDismiss(() => {
+                    this.hideContent = false;
+                    this.showBtnGaleria = true;
+                    this.hideBtnModal = false;
+                  });
+                
+                  toast.present();
+                  
+                 }
+               })
+               
           })
          
+          loader.dismiss();
         
         },
       error => {
@@ -213,7 +240,7 @@ requestPOSTTus(videoInfo):void{
       }
   );
 
-   loader.dismiss();  
+ 
   
   });
 }

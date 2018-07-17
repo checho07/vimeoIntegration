@@ -1,7 +1,7 @@
 
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Config } from 'ionic-angular/umd';
 
 
 @Injectable()
@@ -22,7 +22,7 @@ export class RestProvider {
   this.vimeoURl = "https://api.vimeo.com";
 
 
-
+ 
   this.headersParams =
    {
         "Content-Type": "application/json",
@@ -35,20 +35,28 @@ export class RestProvider {
          "Content-Type": "application/offset+octet-stream",
          "Upload-Offset": "0"
      };
- }
+
+     }
+
 
  //Fin Constructor
+
+
+ 
 
 
  PatchVideo(video,uploadLink){
   this.options={
 
     headers: this.TusheadersParams,
-    observe:'response'
+    observe:'response',
+    responseProgress:true
     
  }
- return this.http.patch(uploadLink,video,this.options)
-  
+return this.http.patch(uploadLink,video,this.options)
+ 
+ 
+ 
 
  }
 
@@ -56,6 +64,7 @@ export class RestProvider {
     this.options={
 
     headers: this.headersParams,
+    
     body: 
     JSON.stringify({
 

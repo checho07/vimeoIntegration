@@ -15,7 +15,7 @@
           <hr>
         </ion-item>
         
-       <video src="{{card.files[0].link}}" height="100px" width="50%" style="margin:auto 25%;background-color:black" controls controlsList="nodownload" poster="{{card.pictures.sizes[6].link}}" ></video>
+       <video src="{{card.files[0].link}}" height="100px" width="90%" style="margin-left:5%;background-color:black" controls controlsList="nodownload" poster="{{card.pictures.sizes[6].link}}" ></video>
        
          <ion-card-content>
           <p>{{card.description}}</p>
@@ -25,7 +25,7 @@
           <ion-col>
             <button ion-button icon-start clear small >
               <ion-icon name="eye"></ion-icon>
-              <div>{{card.stats.plays}} Vista</div>
+              <div>{{card.stats.plays}} Vistas</div>
             </button>
           </ion-col>
           <ion-col>
@@ -34,30 +34,34 @@
               <div>{{card.metadata.connections.comments.total}} Comentarios</div>
             </button>
           </ion-col>
-          <ion-col center text-center>
+          <!-- <ion-col center text-center>
             <ion-note>
               11h ago
             </ion-note>
-          </ion-col>
+          </ion-col> -->
         </ion-row>
       
       </ion-card>
-
-<!-- <button ion-button block (click)="openGallery()" [hidden]="showBtnGaleria" id="btnGaleria">Abrir Galeria</button> -->
-
 
 <ion-fab middle center  >
   <button ion-fab  (click)="openGallery()"  [hidden]= "showBtnGaleria" id="btnGaleria" color="danger"><ion-icon name="folder" ></ion-icon></button>
 </ion-fab>
 
-<div id="embed"  [hidden]="true">
+<div id="embed"  [hidden]="false">
   <input type="file" id="tusInput" (change)="OnchangeInput($event)">
 </div>
 
-<ion-fab bottom right  >
+<!-- <ion-fab bottom right  >
     <button ion-fab mini (click)="addVideo()"  [hidden]= "hideBtnModal" color="danger"><ion-icon name="videocam" ></ion-icon></button>
+  </ion-fab>   -->
+
+  <ion-fab bottom right [hidden]= "hideBtnModal">
+    <button ion-fab    [hidden]= "hideBtnModal" color="danger"><ion-icon name="videocam" ></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab mini icon-only (click)="recordVideoHD()"  [hidden]= "hideBtnModal" color="danger">HD</button>
+      <button ion-fab mini (click)="addVideo()"  [hidden]= "hideBtnModal" color="danger">LQ</button>
+    </ion-fab-list>
+ 
   </ion-fab>
-  <progress-bar [progress]="progress" [color]="'green'" >
-  </progress-bar>
 
 </ion-content>

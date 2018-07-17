@@ -12,6 +12,7 @@ import { MediaCapture  } from '@ionic-native/media-capture';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { File } from '@ionic-native/file';
 import {ProgressBarModule} from "angular-progress-bar"
+//import { VideoCapturePlus} from '@ionic-native/video-capture-plus';
 
 
 @NgModule({
